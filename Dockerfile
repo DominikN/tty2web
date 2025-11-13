@@ -1,7 +1,9 @@
-FROM golang:1.23
+FROM golang:1.22.12
 
 WORKDIR /app
 
 COPY . .
+
+RUN go mod tidy
 
 RUN go build
