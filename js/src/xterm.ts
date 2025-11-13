@@ -2,11 +2,13 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { WebglAddon } from 'xterm-addon-webgl';
+import { ImageAddon } from 'xterm-addon-image';
 import { lib } from "libapps"
 
 const terminal = new Terminal()
 terminal.loadAddon(new FitAddon());
 terminal.loadAddon(new WebLinksAddon());
+terminal.loadAddon(new ImageAddon());
 
 export class Xterm {
     elem: HTMLElement;
@@ -26,6 +28,8 @@ export class Xterm {
         this.term.loadAddon(fitAddon);
         const webLinksAddon = new WebLinksAddon();
         this.term.loadAddon(webLinksAddon);
+        const imageAddon = new ImageAddon();
+        this.term.loadAddon(imageAddon);
 
         if (elem.ownerDocument) {
             this.message = elem.ownerDocument.createElement("div") ;
