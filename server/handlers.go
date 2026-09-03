@@ -286,6 +286,8 @@ func (server *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("jsb.onerror = e => console.log(\"error loading tty2web-bundle.js\"); document.head.appendChild(jsb);"))
 	w.Write([]byte("var jss = document.createElement(\"script\"); jss.src = \"" + jsurl + "/sidenav.js\";"))
 	w.Write([]byte("jss.onerror = e => console.log(\"error loading sidenav.js\"); document.head.appendChild(jss);"))
+	w.Write([]byte("var jst = document.createElement(\"script\"); jst.src = \"" + jsurl + "/touchbar.js\";"))
+	w.Write([]byte("jst.onerror = e => console.log(\"error loading touchbar.js\"); document.head.appendChild(jst);"))
 }
 
 // titleVariables merges maps in a specified order.

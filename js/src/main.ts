@@ -23,6 +23,10 @@ if (elem !== null) {
     const wt = new WebTTY(term, factory, args, gotty_auth_token);
     const closer = wt.open();
 
+    // Exposed for plain-JS assets loaded next to the bundle (touchbar.js).
+    // Nothing in the bundle depends on it.
+    (window as any).tty2webTerm = term;
+
     window.addEventListener("unload", () => {
         closer();
         term.close();

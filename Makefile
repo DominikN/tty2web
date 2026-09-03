@@ -16,7 +16,7 @@ tty2web-static: main.go server/*.go webtty/*.go backend/*.go Makefile
 	CGO_ENABLED=0 go build ${STATIC_OPTIONS}
 
 .PHONY: asset
-asset: bindata/static/js/tty2web-bundle.js $(JSMAPFILE) bindata/static/index.html bindata/static/favicon.png bindata/static/css/index.css bindata/static/css/xterm.css bindata/static/css/xterm_customize.css bindata/static/js/sidenav.js
+asset: bindata/static/js/tty2web-bundle.js $(JSMAPFILE) bindata/static/index.html bindata/static/favicon.png bindata/static/css/index.css bindata/static/css/xterm.css bindata/static/css/xterm_customize.css bindata/static/js/sidenav.js bindata/static/js/touchbar.js
 
 .PHONY: all
 all: asset tty2web
@@ -41,6 +41,9 @@ bindata/static/js/tty2web-bundle.js.map: bindata/static/js js/dist/tty2web-bundl
 
 bindata/static/js/sidenav.js: bindata/static/js resources/js/sidenav.js
 	cp resources/js/sidenav.js bindata/static/js/sidenav.js
+
+bindata/static/js/touchbar.js: bindata/static/js resources/js/touchbar.js
+	cp resources/js/touchbar.js bindata/static/js/touchbar.js
 
 bindata/static/css: bindata/static
 	mkdir -p bindata/static/css

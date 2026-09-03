@@ -16,6 +16,8 @@ export class Xterm {
     resizeListener: () => void;
     decoder: lib.UTF8Decoder;
 
+    inputCallback: (input: string) => void;
+
     message: HTMLElement;
     messageTimeout: number;
     messageTimer: number;
@@ -92,7 +94,21 @@ export class Xterm {
         });
     };
 
+    // Feed bytes to the server as if the user had typed them, by handing them
+    // to the same callback real keystrokes go through. Used by the touch key
+    // bar (touchbar.js) for keys a phone keyboard does not have.
+    //
+    // Deliberately NOT xterm's own input path: 5.2's Terminal has no public
+    // input(), paste() would mangle escape sequences, and _core.coreService
+    // is private. The send callback is ours and is version-proof.
+    input(data: string) {
+        if (this.inputCallback) {
+            this.inputCallback(data);
+        }
+    };
+
     onInput(callback: (input: string) => void) {
+        this.inputCallback = callback;
         this.term.onData(data => {
             callback(data);
         });

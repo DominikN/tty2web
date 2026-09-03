@@ -5,6 +5,7 @@ export declare class Xterm {
     term: Terminal;
     resizeListener: () => void;
     decoder: lib.UTF8Decoder;
+    inputCallback: (input: string) => void;
     message: HTMLElement;
     messageTimeout: number;
     messageTimer: number;
@@ -18,6 +19,7 @@ export declare class Xterm {
     removeMessage(): void;
     setWindowTitle(title: string): void;
     setPreferences(value: object): void;
+    input(data: string): void;
     onInput(callback: (input: string) => void): void;
     onResize(callback: (columns: number, rows: number) => void): void;
     deactivate(): void;

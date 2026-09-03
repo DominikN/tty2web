@@ -4,3 +4,5 @@ builds
 js/node_modules/*
 go.mod
 go.sum
+js/dist/tty2web-bundle.js.map
+js/dist/tty2web-bundle.js.LICENSE.txt
