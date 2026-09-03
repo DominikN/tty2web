@@ -132,6 +132,30 @@
     return bar;
   }
 
+  // Shrink the font until the terminal is wide enough to be usable.
+  //
+  // The server's --font-size option cannot do this: Xterm.setPreferences()
+  // discards every preference except EnableWebGL, so a server-set font size
+  // is silently dropped. It would also be one fixed size for every client,
+  // which is wrong — a phone and a laptop want different numbers.
+  //
+  // TARGET_COLS is what the apps on the other end actually need: the flasher
+  // TUI stacks its lists below 100 columns but its lists are 50 wide
+  // (MinListWidth), so under ~55 it starts to overflow.
+  var TARGET_COLS = 58;
+  var MIN_PX = 8, MAX_PX = 15;
+
+  function fitFont() {
+    if (!term || !term.term || !term.term.options) return false;
+    var xt = term.term;
+    // xterm renders monospace at roughly 0.6 * fontSize per column.
+    var px = Math.floor(window.innerWidth / (TARGET_COLS * 0.6));
+    px = Math.max(MIN_PX, Math.min(MAX_PX, px));
+    if (xt.options.fontSize === px) return false;
+    xt.options.fontSize = px;
+    return true;
+  }
+
   // Reserve the bar's height so it never covers the bottom terminal rows,
   // then let the bundle's own resize listener refit xterm to the new box.
   function reserve(bar) {
@@ -139,6 +163,7 @@
     if (!el) return;
     var h = bar.offsetHeight;
     el.style.height = "calc(100% - " + h + "px)";
+    fitFont();
     window.dispatchEvent(new Event("resize"));
   }
 
