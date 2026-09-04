@@ -39,6 +39,11 @@
     { label: "PgDn",  seq: "\x1b[6~" },
     { label: "^C",    seq: "\x03" },
     { label: "^B",    seq: "\x02" },
+    // Both the flasher TUI and wishlist quit on a bare "q" (their own footers
+    // say so), and quitting the flasher is how you get back to the launcher.
+    // Without a button the only route is the keyboard toggle, which is not
+    // discoverable — reported from an iPhone, 2026-09-04.
+    { label: "q",     seq: "q" },
     { label: "Ctrl",  ctrl: true },
     { label: "⌨", kbd: true }
   ];
