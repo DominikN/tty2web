@@ -48,6 +48,15 @@
     { label: "⌨", kbd: true }
   ];
 
+  // The soft keyboard is opt-in, via the bar's own button. xterm focuses its
+  // helper textarea on every tap, and a focused textarea is what makes Android
+  // and iOS raise the IME — so merely touching a TUI zone threw up a keyboard
+  // covering half the screen, which the key bar exists to make unnecessary.
+  // inputMode "none" keeps the focus (taps, mouse reporting and the bar all
+  // still need it) while telling the browser not to offer one.
+  var imeOn = false;
+  var kbdBtn = null;
+
   var CSS =
     "#tb-bar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;" +
     "flex-wrap:wrap;gap:4px;justify-content:center;box-sizing:border-box;" +
@@ -86,6 +95,17 @@
     return null;
   }
 
+  function setIME(on) {
+    var ta = textarea();
+    if (!ta) return false;
+    ta.inputMode = on ? "text" : "none";
+    // Android re-reads inputmode only when the element takes focus afresh, so
+    // a bare property change on the already-focused textarea does nothing.
+    ta.blur();
+    ta.focus();
+    return true;
+  }
+
   function setCtrl(on) {
     ctrlArmed = on;
     if (ctrlBtn) ctrlBtn.classList.toggle("tb-on", on);
@@ -96,10 +116,9 @@
   }
 
   function toggleKeyboard() {
-    var ta = textarea();
-    if (!ta) return;
-    if (document.activeElement === ta) ta.blur();
-    else ta.focus();
+    if (!setIME(!imeOn)) return;
+    imeOn = !imeOn;
+    if (kbdBtn) kbdBtn.classList.toggle("tb-on", imeOn);
   }
 
   function build() {
@@ -116,6 +135,7 @@
       b.textContent = k.label;
       if (k.cls) b.className = k.cls;
       if (k.ctrl) ctrlBtn = b;
+      if (k.kbd) kbdBtn = b;
 
       // pointerdown, not click: the terminal must not lose focus, and a
       // click would fire ~300ms later on some mobile browsers.
@@ -187,6 +207,10 @@
       setCtrl(false);
       send(b);
     }, true);
+
+    // Retry: the helper textarea is created with the terminal, but the bundle
+    // may not have attached it yet when tty2webTerm first appears.
+    if (!setIME(false)) setTimeout(function () { setIME(false); }, 200);
 
     var refit = function () { reserve(bar); };
     window.addEventListener("orientationchange", refit);
